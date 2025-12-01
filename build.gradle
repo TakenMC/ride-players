@@ -1,0 +1,143 @@
+plugins {
+    id 'java'
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+}
+
+group = 'org.taken'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "spigotmc-repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    // Compile against 1.21 base API - compatible with all 1.21.x versions
+    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.21")
+    }
+}
+
+// Build artifacts for multiple Minecraft versions
+def minecraftVersions = [
+        [mc: '1.16.5', java: 8],
+        [mc: '1.17.1', java: 16],
+        [mc: '1.18.2', java: 17],
+        [mc: '1.19.4', java: 17],
+        [mc: '1.20.6', java: 17],
+        [mc: '1.21', java: 21]
+]
+
+def jarTasks = []
+
+minecraftVersions.each { versionInfo ->
+    def mcVersion = versionInfo.mc
+    def javaVersion = versionInfo.java
+    def slug = mcVersion.replaceAll('\\.', '_')
+    
+    // Create a dedicated configuration for this MC version
+    configurations {
+        "spigotApiFor_${slug}" {
+            canBeConsumed = false
+            canBeResolved = true
+        }
+    }
+
+    dependencies {
+        "spigotApiFor_${slug}"("org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT")
+    }
+
+    // Compile task for this version
+    tasks.register("compileFor_${slug}", JavaCompile) {
+        description = "Compile against Spigot API ${mcVersion} with Java ${javaVersion}"
+        source = sourceSets.main.java
+        classpath = files(configurations.getByName("spigotApiFor_${slug}"))
+        destinationDirectory.set(file("${buildDir}/classes/${mcVersion}"))
+        options.encoding = 'UTF-8'
+        
+        // Set Java version compatibility for this MC version
+        sourceCompatibility = JavaVersion.toVersion(javaVersion)
+        targetCompatibility = JavaVersion.toVersion(javaVersion)
+        
+        if (javaVersion >= 10) {
+            options.release.set(javaVersion)
+        }
+        
+        doFirst {
+            destinationDirectory.asFile.get().mkdirs()
+        }
+    }
+
+    // Process resources for this variant
+    tasks.register("processResourcesFor_${slug}", Copy) {
+        from(sourceSets.main.resources.srcDirs) {
+            filesMatching('plugin.yml') {
+                // Extract x.xx version (remove patch if present, keep x.xx if not)
+                def parts = mcVersion.split('\\.')
+                def apiVersion = parts.length > 2 ? "${parts[0]}.${parts[1]}" : mcVersion
+                expand(version: version, apiVersion: apiVersion)
+            }
+        }
+        into("${buildDir}/resources/${mcVersion}")
+    }
+
+    // Jar task for this version
+    def jarTask = tasks.register("jarFor_${slug}", Jar) {
+        dependsOn "compileFor_${slug}", "processResourcesFor_${slug}"
+        archiveBaseName.set(project.name)
+        archiveVersion.set(project.version.toString())
+        archiveClassifier.set(mcVersion)
+        from("${buildDir}/classes/${mcVersion}")
+        from("${buildDir}/resources/${mcVersion}")
+    }
+
+    jarTasks << jarTask
+    
+    // Create a convenience task for building this specific version
+    tasks.register("build${slug.replaceAll('_', '')}") {
+        description = "Build plugin jar for Minecraft ${mcVersion}"
+        group = 'build'
+        dependsOn jarTask
+    }
+}
+
+// Aggregate task to build all version jars
+tasks.register('buildAllVersions') {
+    description = 'Build plugin jars for all Minecraft versions (1.16-1.21)'
+    group = 'build'
+    dependsOn jarTasks
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version, apiVersion: '1.21']
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

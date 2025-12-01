@@ -1,0 +1,21 @@
+name: ride-players
+version: "${version}"
+main: org.taken.ridePlayers.RidePlayers
+api-version: "${apiVersion}"
+author: Taken
+description: A plugin that allows players to ride each other.
+website: https://gitlab.com/Taken/ride-players
+
+commands:
+  rideplayer:
+    description: Ride another player
+    usage: /rideplayer <player> [player]
+    permission: rideplayers.ride
+
+permissions:
+  rideplayers.ride:
+    description: Allows riding other players
+    default: op
+  rideplayers.ride.others:
+    description: Allows making other players ride each other
+    default: op
