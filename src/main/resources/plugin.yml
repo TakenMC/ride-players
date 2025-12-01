@@ -22,7 +22,7 @@ permissions:
     default: true
   rideplayers.ride.others:
     description: Allows making other players ride each other
-    default: true
+    default: op
   rideplayers.kickoff:
     description: Allows kicking off players riding you
     default: true
