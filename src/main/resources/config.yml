@@ -1,0 +1,5 @@
+# RidePlayers Configuration
+
+# Maximum distance (in blocks) between players to allow riding
+# Set to -1 for unlimited distance
+max-distance: 15

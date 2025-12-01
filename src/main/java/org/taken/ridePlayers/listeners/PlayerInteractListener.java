@@ -8,11 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.taken.ridePlayers.RidePlayers;
 import org.taken.ridePlayers.util.Messages;
 
 public class PlayerInteractListener implements Listener {
-    private static final int MAX_DISTANCE = 15;
-
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         // Only handle main hand interactions to avoid double triggering
@@ -47,8 +46,9 @@ public class PlayerInteractListener implements Listener {
         }
 
         // Check distance
-        if (!rider.getWorld().equals(target.getWorld())
-                || rider.getLocation().distance(target.getLocation()) > MAX_DISTANCE) {
+        int maxDistance = RidePlayers.getInstance().getMaxDistance();
+        if (maxDistance >= 0 && (!rider.getWorld().equals(target.getWorld())
+                || rider.getLocation().distance(target.getLocation()) > maxDistance)) {
             rider.sendMessage(Messages.error("You are too far away from " + target.getName() + "!"));
             return;
         }

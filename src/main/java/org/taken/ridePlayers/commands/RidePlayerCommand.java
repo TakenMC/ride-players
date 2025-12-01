@@ -5,10 +5,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.taken.ridePlayers.RidePlayers;
 import org.taken.ridePlayers.util.Messages;
 
 public class RidePlayerCommand implements CommandExecutor {
-    private static final int MAX_DISTANCE = 15;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -46,8 +46,9 @@ public class RidePlayerCommand implements CommandExecutor {
             }
 
             // Check distance
-            if (!rider.getWorld().equals(target.getWorld())
-                    || rider.getLocation().distance(target.getLocation()) > MAX_DISTANCE) {
+            int maxDistance = RidePlayers.getInstance().getMaxDistance();
+            if (maxDistance >= 0 && (!rider.getWorld().equals(target.getWorld())
+                    || rider.getLocation().distance(target.getLocation()) > maxDistance)) {
                 rider.sendMessage(Messages.error("You are too far away from " + target.getName() + "!"));
                 return true;
             }
@@ -77,8 +78,9 @@ public class RidePlayerCommand implements CommandExecutor {
             }
 
             // Check distance
-            if (!rider.getWorld().equals(target.getWorld())
-                    || rider.getLocation().distance(target.getLocation()) > MAX_DISTANCE) {
+            int maxDistance = RidePlayers.getInstance().getMaxDistance();
+            if (maxDistance >= 0 && (!rider.getWorld().equals(target.getWorld())
+                    || rider.getLocation().distance(target.getLocation()) > maxDistance)) {
                 sender.sendMessage(Messages.error(rider.getName() + " is too far away from " + target.getName() + "!"));
                 return true;
             }
