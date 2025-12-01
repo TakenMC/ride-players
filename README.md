@@ -2,7 +2,8 @@
 
 A plugin that allows players to ride each other.
 
-`/rideplayer <player> [player]`
+`/rideplayer <player> [player]` - Ride another player
+`/kickplayeroff` - Remove the person riding you
 
 Specifing one player makes your ride the player while specifing to players makes the first player ride the second player.
 
@@ -17,3 +18,4 @@ You can also right click a player to ride the player.
 
 - `rideplayers.ride` - Ride a player
 - `rideplayers.ride.others` - Make others ride players
+- `rideplayers.kickoff` - Kick off the player riding you

@@ -7,7 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.taken.ridePlayers.util.Messages;
 
-public class KickOffPlayerCommand implements CommandExecutor {
+public class KickPlayerOffCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {

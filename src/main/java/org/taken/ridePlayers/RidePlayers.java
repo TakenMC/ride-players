@@ -3,7 +3,7 @@ package org.taken.ridePlayers;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.taken.ridePlayers.commands.KickOffPlayerCommand;
+import org.taken.ridePlayers.commands.KickPlayerOffCommand;
 import org.taken.ridePlayers.commands.RidePlayerCommand;
 import org.taken.ridePlayers.listeners.PlayerInteractListener;
 
@@ -20,7 +20,7 @@ public final class RidePlayers extends JavaPlugin {
         saveDefaultConfig();
 
         this.getCommand("rideplayer").setExecutor(new RidePlayerCommand());
-        this.getCommand("kickoffplayer").setExecutor(new KickOffPlayerCommand());
+        this.getCommand("kickplayeroff").setExecutor(new KickPlayerOffCommand());
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         LOGGER.info("Ride players plugin loaded");
     }
