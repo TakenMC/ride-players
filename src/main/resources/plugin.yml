@@ -11,6 +11,10 @@ commands:
     description: Ride another player
     usage: /rideplayer <player> [player]
     permission: rideplayers.ride
+  kickoffplayer:
+    description: Remove the person riding you
+    usage: /kickoffplayer
+    permission: rideplayers.kickoff
 
 permissions:
   rideplayers.ride:
@@ -18,4 +22,7 @@ permissions:
     default: true
   rideplayers.ride.others:
     description: Allows making other players ride each other
+    default: true
+  rideplayers.kickoff:
+    description: Allows kicking off players riding you
     default: true

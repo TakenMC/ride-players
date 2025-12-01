@@ -9,7 +9,6 @@ import org.taken.ridePlayers.RidePlayers;
 import org.taken.ridePlayers.util.Messages;
 
 public class RidePlayerCommand implements CommandExecutor {
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1 || args.length > 2) {
