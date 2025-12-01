@@ -4,7 +4,7 @@ main: org.taken.ridePlayers.RidePlayers
 api-version: "${apiVersion}"
 author: Taken
 description: A plugin that allows players to ride each other.
-website: https://gitlab.com/Taken/ride-players
+website: https://github.com/Taken/ride-players
 
 commands:
   rideplayer:
