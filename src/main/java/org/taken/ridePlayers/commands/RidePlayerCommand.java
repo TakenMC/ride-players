@@ -77,8 +77,8 @@ public class RidePlayerCommand implements CommandExecutor {
                 return true;
             }
 
-            // Check distance
-            int maxDistance = RidePlayers.getInstance().getMaxDistance();
+            // Check distance for ride others
+            int maxDistance = RidePlayers.getInstance().getRideOthersMaxDistance();
             if (maxDistance >= 0 && (!rider.getWorld().equals(target.getWorld())
                     || rider.getLocation().distance(target.getLocation()) > maxDistance)) {
                 sender.sendMessage(Messages.error(rider.getName() + " is too far away from " + target.getName() + "!"));

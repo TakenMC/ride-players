@@ -35,4 +35,8 @@ public final class RidePlayers extends JavaPlugin {
     public int getMaxDistance() {
         return getConfig().getInt("max-distance", 15);
     }
+
+    public int getRideOthersMaxDistance() {
+        return getConfig().getInt("ride-others-max-distance", -1);
+    }
 }
